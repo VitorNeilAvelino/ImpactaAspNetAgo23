@@ -1,0 +1,48 @@
+﻿@using AspNet.Capitulo02.Razor.Comentarios
+
+@{ 
+    var aplicacao = new ComentarioAplicacao();
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Comentários</title>
+</head>
+<body>
+    @{
+        if (IsPost)
+        {
+            aplicacao.Inserir(Request["nome"], Request["comentario"]);
+        }
+    }
+    <h1>Comentários</h1>
+    <hr />
+    <form method="post">
+        <label>Nome</label>
+        <br />
+        <input type="text" name="nome" />
+        <br />
+
+        <label>Comentário</label>
+        <br />
+        <textarea rows="10" name="comentario"></textarea>
+        <br />
+
+        <br />
+
+        <input type="submit" value="Gravar" />
+    </form>
+
+    <hr />
+
+    @foreach (var comentario in aplicacao.Selecionar())
+    {
+        <p>@comentario.Data.ToString("dd/MM/yyyy HH:mm") - @comentario.Nome</p>
+        <p>@comentario.Comentario</p>
+    }
+
+</body>
+</html>
