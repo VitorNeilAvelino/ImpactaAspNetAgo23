@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="f44123258d2c415b823586d9b0ab15b5" Name="Diagram1">
+        <EntityTypeShape EntityType="MarketplaceModel.Cartao" Width="1.5" PointX="3" PointY="10.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="MarketplaceModel.Categoria" Width="1.5" PointX="0.75" PointY="2.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MarketplaceModel.Cliente" Width="1.5" PointX="0.75" PointY="7.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="MarketplaceModel.ItemPedido" Width="1.5" PointX="5.25" PointY="2.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="MarketplaceModel.Pedido" Width="1.5" PointX="3" PointY="7.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="MarketplaceModel.Produto" Width="1.5" PointX="3" PointY="2.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="MarketplaceModel.ProdutoFoto" Width="1.5" PointX="5.25" PointY="5.5" IsExpanded="true" />
+        <AssociationConnector Association="MarketplaceModel.FK__Cartao__IdClient__35BCFE0A" ManuallyRouted="false" />
+        <AssociationConnector Association="MarketplaceModel.FK__Produto__IdCateg__2C3393D0" ManuallyRouted="false" />
+        <AssociationConnector Association="MarketplaceModel.FK__Pedido__IdClient__276EDEB3" ManuallyRouted="false" />
+        <AssociationConnector Association="MarketplaceModel.FK__ItemPedid__IdPed__31EC6D26" ManuallyRouted="false" />
+        <AssociationConnector Association="MarketplaceModel.FK__ItemPedid__IdPro__32E0915F" ManuallyRouted="false" />
+        <AssociationConnector Association="MarketplaceModel.FK__ProdutoFo__IdPro__2F10007B" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
