@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Marketplace", "Marketplace"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marketplace.Repositorios.SqlServer.DbFirst", "Marketplace.Repositorios.SqlServer.DbFirst\Marketplace.Repositorios.SqlServer.DbFirst.csproj", "{7203414C-89F8-45DB-B0B7-F35124F4C1FB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marketplace.Mvc", "Marketplace.Mvc\Marketplace.Mvc.csproj", "{85951759-FDA9-47EE-AAD7-F8B666FB9A4F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,12 +25,17 @@ Global
 		{7203414C-89F8-45DB-B0B7-F35124F4C1FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7203414C-89F8-45DB-B0B7-F35124F4C1FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7203414C-89F8-45DB-B0B7-F35124F4C1FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85951759-FDA9-47EE-AAD7-F8B666FB9A4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85951759-FDA9-47EE-AAD7-F8B666FB9A4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85951759-FDA9-47EE-AAD7-F8B666FB9A4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85951759-FDA9-47EE-AAD7-F8B666FB9A4F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7203414C-89F8-45DB-B0B7-F35124F4C1FB} = {ADEE064A-4B8B-43A0-B306-C2DF7E5219CE}
+		{85951759-FDA9-47EE-AAD7-F8B666FB9A4F} = {ADEE064A-4B8B-43A0-B306-C2DF7E5219CE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6538C49D-8D27-4923-A43C-FDC0D80BC930}
