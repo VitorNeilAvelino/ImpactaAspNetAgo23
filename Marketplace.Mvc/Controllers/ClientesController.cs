@@ -3,6 +3,7 @@ using Marketplace.Repositorios.SqlServer.DbFirst;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 
@@ -34,10 +35,10 @@ namespace Marketplace.Mvc.Controllers
         {
             var viewModel = new ClienteViewModel();
 
-            viewModel.Telefone = cliente.Telefone;
+            viewModel.Telefone = Convert.ToUInt64(Regex.Replace(cliente.Telefone, @"\D", "")).ToString(@"(00) 0 0000-0000");
             viewModel.Nome = cliente.Nome;
             viewModel.Email = cliente.Email;
-            viewModel.Documento = cliente.Documento;
+            viewModel.Documento = Convert.ToUInt64(Regex.Replace(cliente.Documento, @"\D", "")).ToString(@"000\.000\.000-00");
             viewModel.Id = cliente.Id;
 
             return viewModel;
@@ -46,7 +47,7 @@ namespace Marketplace.Mvc.Controllers
         // GET: Clientes/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            return View(Mapear(clienteRepositorio.Selecionar(id)));
         }
 
         // GET: Clientes/Create
@@ -57,6 +58,7 @@ namespace Marketplace.Mvc.Controllers
 
         // POST: Clientes/Create
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Create(ClienteViewModel viewModel)
         {
             try
@@ -80,9 +82,9 @@ namespace Marketplace.Mvc.Controllers
         {
             var cliente = new Cliente();
 
-            cliente.Telefone = viewModel.Telefone;
+            cliente.Telefone = Regex.Replace(viewModel.Telefone, @"\D", "");
             cliente.Email = viewModel.Email;
-            cliente.Documento = viewModel.Documento;
+            cliente.Documento = viewModel.Documento.Replace(".", "").Replace("-", "");
             cliente.Id = viewModel.Id;
             cliente.Nome = viewModel.Nome;
 
@@ -92,44 +94,53 @@ namespace Marketplace.Mvc.Controllers
         // GET: Clientes/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            return View(Mapear(clienteRepositorio.Selecionar(id)));
         }
 
         // POST: Clientes/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(ClienteViewModel viewModel)
         {
             try
             {
-                // TODO: Add update logic here
+                //var nome = collection["nome"];
+
+                if (!ModelState.IsValid)
+                {
+                    return View(viewModel);
+                }
+
+                clienteRepositorio.Atualizar(Mapear(viewModel));
 
                 return RedirectToAction("Index");
             }
             catch
             {
-                return View();
+                return View("Error");
             }
         }
 
         // GET: Clientes/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            return View(Mapear(clienteRepositorio.Selecionar(id)));
         }
 
         // POST: Clientes/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        [ActionName("Delete")]
+        public ActionResult DeleteConfirmation(int id)
         {
             try
             {
-                // TODO: Add delete logic here
+                clienteRepositorio.Excluir(id);
 
                 return RedirectToAction("Index");
             }
             catch
             {
-                return View();
+                return View("Error");
             }
         }
     }
