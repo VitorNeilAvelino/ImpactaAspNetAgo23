@@ -51,7 +51,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CartaoRepositorio.cs" />
+    <Compile Include="ModelConfiguration\CartaoConfiguration.cs" />
     <Compile Include="GatewayPagamentoContext.cs" />
+    <Compile Include="ModelConfiguration\PagamentoConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
