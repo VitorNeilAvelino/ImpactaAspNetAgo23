@@ -55,6 +55,7 @@
     <Compile Include="ModelConfiguration\CartaoConfiguration.cs" />
     <Compile Include="GatewayPagamentoContext.cs" />
     <Compile Include="ModelConfiguration\PagamentoConfiguration.cs" />
+    <Compile Include="PagamentoRepositorio.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

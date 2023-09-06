@@ -44,11 +44,11 @@
     <Compile Include="Entidades\Cartao.cs" />
     <Compile Include="Entidades\Pagamento.cs" />
     <Compile Include="Entidades\StatusPagamento.cs" />
+    <Compile Include="Interfaces\ICartaoRepositorio.cs" />
+    <Compile Include="Interfaces\IPagamentoRepositorio.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Servicos\PagamentoServico.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Interfaces\" />
-    <Folder Include="Servicos\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
