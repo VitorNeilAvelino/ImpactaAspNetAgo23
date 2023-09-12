@@ -29,7 +29,7 @@ namespace GatewayPagamento.WebApi.Models
             return viewModels;
         }
 
-        private static PagamentoGetViewModel Mapear(Pagamento pagamento)
+        internal static PagamentoGetViewModel Mapear(Pagamento pagamento)
         {
             var viewModel = new PagamentoGetViewModel();
 
