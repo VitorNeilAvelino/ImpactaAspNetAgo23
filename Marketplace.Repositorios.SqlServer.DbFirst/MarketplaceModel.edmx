@@ -207,8 +207,8 @@
           <Property Name="Nome" Type="String" MaxLength="60" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Telefone" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Email" Type="String" MaxLength="60" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="Cartaos" Relationship="Self.FK__Cartao__IdClient__35BCFE0A" FromRole="Cliente" ToRole="Cartao" />
-          <NavigationProperty Name="Pedidoes" Relationship="Self.FK__Pedido__IdClient__276EDEB3" FromRole="Cliente" ToRole="Pedido" />
+          <NavigationProperty Name="Cartoes" Relationship="Self.FK__Cartao__IdClient__35BCFE0A" FromRole="Cliente" ToRole="Cartao" />
+          <NavigationProperty Name="Pedidos" Relationship="Self.FK__Pedido__IdClient__276EDEB3" FromRole="Cliente" ToRole="Pedido" />
         </EntityType>
         <EntityType Name="ItemPedido">
           <Key>

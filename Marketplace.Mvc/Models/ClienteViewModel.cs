@@ -26,5 +26,8 @@ namespace Marketplace.Mvc.Models
         [Required]
         [EmailAddress]
         public string Email { get; set; }
+
+        public Guid? GuidCartao { get; set; }
+        //public Nullable<Guid> GuidCartao { get; set; }
     }
 }
