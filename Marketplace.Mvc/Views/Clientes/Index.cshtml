@@ -41,7 +41,7 @@
             @Html.DisplayFor(modelItem => item.Email)
         </td>
         <td>
-            @Html.ActionLink("Pagamentos", "Index", "Pagamentos", new { guidCartao = item.GuidCartao, nomeCliente = item.Nome }) |
+            @Html.ActionLink("Pagamentos", "Index", "Pagamentos", new { guidCartao = item.GuidCartao, nomeCliente = item.Nome }, null) |
             @Html.ActionLink("Editar", "Edit", new { id=item.Id }) |
             @Html.ActionLink("Exibir", "Details", new { id=item.Id }) |
             @Html.ActionLink("Excluir", "Delete", new { id=item.Id })

@@ -17,7 +17,7 @@ namespace GatewayPagamento.Repositorios.SqlServer.CodeFirst.Tests
         {
             using (var contexto = new GatewayPagamentoContext())
             {
-                contexto.Cartoes.Add(new Cartao { Numero = "1234123412341111", Limite = 1000 });
+                contexto.Cartoes.Add(new Cartao { Numero = "1234123412341234", Limite = 1000 });
                 contexto.SaveChanges();
             }
         }
