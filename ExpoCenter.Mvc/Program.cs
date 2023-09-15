@@ -1,4 +1,5 @@
 using ExpoCenter.Mvc.Data;
+using ExpoCenter.Repositorios.SqlServer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,9 +13,15 @@ namespace ExpoCenter.Mvc
 
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(connectionString));
+            builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+
+            var expoCenterConnectionString = builder.Configuration.GetConnectionString("ExpoCenterConnection") ?? 
+                throw new InvalidOperationException("Connection string 'ExpoCenterConnection' not found.");
+            builder.Services.AddDbContext<ExpoCenterDbContext>(options => options.UseSqlServer(expoCenterConnectionString));
+
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();

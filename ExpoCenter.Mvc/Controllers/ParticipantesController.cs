@@ -1,14 +1,25 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using ExpoCenter.Mvc.Models;
+using ExpoCenter.Repositorios.SqlServer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpoCenter.Mvc.Controllers
 {
     public class ParticipantesController : Controller
     {
-        // GET: ParticipantesController
+        private readonly ExpoCenterDbContext dbContext;
+        private readonly IMapper mapper;
+
+        public ParticipantesController(ExpoCenterDbContext dbContext, IMapper mapper)
+        {
+            this.dbContext = dbContext;
+            this.mapper = mapper;
+        }
+
         public ActionResult Index()
         {
-            return View();
+            return View(mapper.Map<List<ParticipanteIndexViewModel>>(dbContext.Participantes)); 
         }
 
         // GET: ParticipantesController/Details/5
