@@ -5,6 +5,7 @@ using ExpoCenter.Repositorios.SqlServer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.Language.Extensions;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExpoCenter.Mvc.Controllers
@@ -76,7 +77,7 @@ namespace ExpoCenter.Mvc.Controllers
         public ActionResult Edit(int id)
         {
             var participante = dbContext.Participantes
-                .Include(p => p.Eventos)
+                //.Include(p => p.Eventos)
                 .SingleOrDefault(p => p.Id == id);
 
             if (participante == null)
@@ -142,6 +143,28 @@ namespace ExpoCenter.Mvc.Controllers
                 dbContext.SaveChanges();
 
                 return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException ex)
+            {
+                if (ex.InnerException is SqlException sqlException)
+                {
+                    switch (sqlException.Message)
+                    {
+                        case string mensagem when mensagem.Contains("IX_Participante_Cpf"):
+                            ModelState.AddModelError("", $"O CPF {viewModel.Cpf} já está cadastrado.");
+                            break;
+                        case string mensagem when mensagem.Contains("IX_Participante_Email"):
+                            ModelState.AddModelError("", $"O email {viewModel.Email} já está cadastrado.");
+                            break;
+                    }
+
+                    if (!ModelState.IsValid)
+                    {
+                        return View(viewModel);
+                    }
+                }
+
+                throw;
             }
             catch
             {

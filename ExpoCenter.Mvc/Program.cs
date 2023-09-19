@@ -17,7 +17,9 @@ namespace ExpoCenter.Mvc
 
             var expoCenterConnectionString = builder.Configuration.GetConnectionString("ExpoCenterConnection") ?? 
                 throw new InvalidOperationException("Connection string 'ExpoCenterConnection' not found.");
-            builder.Services.AddDbContext<ExpoCenterDbContext>(options => options.UseSqlServer(expoCenterConnectionString));
+            builder.Services.AddDbContext<ExpoCenterDbContext>(options => options
+                .UseLazyLoadingProxies()
+                .UseSqlServer(expoCenterConnectionString));
 
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

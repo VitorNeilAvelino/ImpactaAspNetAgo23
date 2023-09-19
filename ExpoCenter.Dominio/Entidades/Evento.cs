@@ -7,6 +7,6 @@
         public DateTime Data { get; set; }
         public string Local { get; set; }
         public decimal Preco { get; set; }
-        public List<Participante> Participantes { get; set; }
+        public virtual List<Participante>? Participantes { get; set; }
     }
 }
