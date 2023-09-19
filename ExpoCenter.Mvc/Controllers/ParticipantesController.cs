@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
+using ExpoCenter.Dominio.Entidades;
 using ExpoCenter.Mvc.Models;
 using ExpoCenter.Repositorios.SqlServer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Razor.Language.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace ExpoCenter.Mvc.Controllers
 {
@@ -31,42 +34,118 @@ namespace ExpoCenter.Mvc.Controllers
         // GET: ParticipantesController/Create
         public ActionResult Create()
         {
-            return View();
+            var viewModel = new ParticipanteCreateViewModel();
+
+            viewModel.Eventos = mapper.Map<List<EventoGridViewModel>>(dbContext.Eventos);
+
+            return View(viewModel);
         }
 
-        // POST: ParticipantesController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(ParticipanteCreateViewModel viewModel)
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return View(viewModel);
+                }
+
+                var participante = mapper.Map<Participante>(viewModel);
+
+                participante.Eventos = new List<Evento>();
+
+                foreach (var eventoViewModel in viewModel.Eventos.Where(e => e.Selecionado))
+                {
+                    participante.Eventos.Add(dbContext.Eventos.Find(eventoViewModel.Id));
+                }
+
+                dbContext.Participantes.Add(participante);
+                dbContext.SaveChanges();
+
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                return View("Error");
             }
         }
 
         // GET: ParticipantesController/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
-        }
+            var participante = dbContext.Participantes
+                .Include(p => p.Eventos)
+                .SingleOrDefault(p => p.Id == id);
 
-        // POST: ParticipantesController/Edit/5
+            if (participante == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = mapper.Map<ParticipanteCreateViewModel>(participante);
+
+            viewModel.Eventos = mapper.Map<List<EventoGridViewModel>>(dbContext.Eventos);
+
+            if (participante.Eventos != null)
+            {
+                foreach (var evento in participante.Eventos)
+                {
+                    viewModel.Eventos.Single(e => e.Id == evento.Id).Selecionado = true;
+                }
+            }
+
+            return View(viewModel);
+        }
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(ParticipanteCreateViewModel viewModel)
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return View(viewModel);
+                }
+
+                var participante = dbContext.Participantes
+                    .Include(p => p.Eventos)
+                    .SingleOrDefault(p => p.Id == viewModel.Id);
+
+                if (participante == null)
+                {
+                    return NotFound();
+                }
+
+                dbContext.Entry(participante).CurrentValues.SetValues(viewModel);
+
+                foreach (var eventoViewModel in viewModel.Eventos)
+                {
+                    if (eventoViewModel.Selecionado)
+                    {
+                        if (participante.Eventos.Any(e => e.Id == eventoViewModel.Id))
+                        {
+                            continue;
+                        }
+
+                        participante.Eventos.Add(dbContext.Eventos.Single(e => e.Id == eventoViewModel.Id));
+                    }
+                    else
+                    {
+                        participante.Eventos.Remove(dbContext.Eventos.Single(e => e.Id == eventoViewModel.Id));
+                    }
+                }
+
+                dbContext.Update(participante);
+                dbContext.SaveChanges();
+
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                return View("Error");
             }
         }
 
