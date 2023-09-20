@@ -9,6 +9,7 @@ using ExpoCenter.Dominio.Entidades;
 using ExpoCenter.Repositorios.SqlServer;
 using AutoMapper;
 using ExpoCenter.Mvc.Models;
+using Microsoft.Extensions.Logging;
 
 namespace ExpoCenter.Mvc.Controllers
 {
@@ -26,6 +27,57 @@ namespace ExpoCenter.Mvc.Controllers
         public async Task<IActionResult> Index()
         {
             return View(_mapper.Map<List<EventoViewModel>>(await _context.Eventos.ToListAsync()));
+        }
+
+        public async Task<IActionResult> Participantes(int eventoId)
+        {
+            var evento = await _context.Eventos
+                .Include(e => e.Participantes)
+                .SingleOrDefaultAsync(e => e.Id == eventoId);
+
+            var viewModel = _mapper.Map<EventoViewModel>(evento);
+
+            viewModel.Participantes = _mapper.Map<List<ParticipanteGridViewModel>>(_context.Participantes.OrderBy(p => p.Nome));
+
+            if (evento.Participantes != null)
+            {
+                foreach (var participante in evento.Participantes)
+                {
+                    viewModel.Participantes.Single(p => p.Id == participante.Id).Selecionado = true;
+                }
+            }
+
+            return View(viewModel);        
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Participantes(EventoViewModel viewModel)
+        {
+            var evento = await _context.Eventos
+                //.Include(e => e.Participantes)
+                .SingleOrDefaultAsync(e => e.Id == viewModel.Id);
+
+            foreach (var participanteViewModel in viewModel.Participantes)
+            {
+                if (participanteViewModel.Selecionado)
+                {
+                    if (evento.Participantes.Any(p => p.Id == participanteViewModel.Id))
+                    {
+                        continue;
+                    }
+
+                    evento.Participantes.Add(await _context.Participantes.SingleAsync(p => p.Id == participanteViewModel.Id));
+                }
+                else
+                {
+                    evento.Participantes.Remove(await _context.Participantes.SingleAsync(p => p.Id == participanteViewModel.Id));
+                }
+            }
+
+            _context.Update(evento);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Details(int? id)
