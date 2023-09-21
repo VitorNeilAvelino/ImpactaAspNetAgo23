@@ -1,3 +1,4 @@
+using ExpoCenter.Mvc.App_Start;
 using ExpoCenter.Mvc.Data;
 using ExpoCenter.Repositorios.SqlServer;
 using Microsoft.AspNetCore.Identity;
@@ -12,10 +13,13 @@ namespace ExpoCenter.Mvc
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-            builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+            var identityConnectionString = builder.Configuration.GetConnectionString("IdentityConnection") ??
+                throw new InvalidOperationException("Connection string 'IdentityConnection' not found.");
+            builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(identityConnectionString));
 
-            var expoCenterConnectionString = builder.Configuration.GetConnectionString("ExpoCenterConnection") ?? 
+            //builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
+
+            var expoCenterConnectionString = builder.Configuration.GetConnectionString("ExpoCenterConnection") ??
                 throw new InvalidOperationException("Connection string 'ExpoCenterConnection' not found.");
             builder.Services.AddDbContext<ExpoCenterDbContext>(options => options
                 .UseLazyLoadingProxies()
@@ -25,8 +29,14 @@ namespace ExpoCenter.Mvc
 
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            //builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            builder.Services.AddIdentity<IdentityUser, IdentityRole>(IdentityConfig.SetIdentityOptions())
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultUI()
+                .AddDefaultTokenProviders();
+
+            builder.Services.AddAuthorization(o => o.AddPolicy("ParticipantesExcluir", Policies.ParticipantesExcluirPolicy));
+
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();

@@ -1,15 +1,19 @@
 ﻿using AutoMapper;
 using ExpoCenter.Dominio.Entidades;
+using ExpoCenter.Mvc.Helpers;
 using ExpoCenter.Mvc.Models;
 using ExpoCenter.Repositorios.SqlServer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.Language.Extensions;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using static ExpoCenter.Dominio.Entidades.PerfilUsuario;
 
 namespace ExpoCenter.Mvc.Controllers
 {
+    [Authorize]
     public class ParticipantesController : Controller
     {
         private readonly ExpoCenterDbContext dbContext;
@@ -21,6 +25,7 @@ namespace ExpoCenter.Mvc.Controllers
             this.mapper = mapper;
         }
 
+        [AllowAnonymous]
         public ActionResult Index()
         {
             return View(mapper.Map<List<ParticipanteIndexViewModel>>(dbContext.Participantes)); 
@@ -73,7 +78,8 @@ namespace ExpoCenter.Mvc.Controllers
             }
         }
 
-        // GET: ParticipantesController/Edit/5
+        //[Authorize(Roles = "Administrador, Gerente")]
+        [AuthorizeRole(Supervisor, Gerente)]
         public ActionResult Edit(int id)
         {
             var participante = dbContext.Participantes
@@ -172,10 +178,24 @@ namespace ExpoCenter.Mvc.Controllers
             }
         }
 
-        // GET: ParticipantesController/Delete/5
+        [Authorize(Policy = "ParticipantesExcluir")]
         public ActionResult Delete(int id)
         {
-            return View();
+            //if (!User.HasClaim("Participantes", "Deletar"))
+            //{
+            //    return new ForbidResult();
+            //}
+
+            var participante = dbContext.Participantes
+                //.Include(p => p.Eventos)
+                .SingleOrDefault(p => p.Id == id);
+
+            if (participante == null)
+            {
+                return NotFound();
+            }
+
+            return View(mapper.Map<ParticipanteIndexViewModel>(participante));
         }
 
         // POST: ParticipantesController/Delete/5
