@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.Language.Extensions;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
+using System.Text.Json;
 using static ExpoCenter.Dominio.Entidades.PerfilUsuario;
 
 namespace ExpoCenter.Mvc.Controllers
@@ -18,11 +20,13 @@ namespace ExpoCenter.Mvc.Controllers
     {
         private readonly ExpoCenterDbContext dbContext;
         private readonly IMapper mapper;
+        private readonly ILogger<ParticipantesController> logger;
 
-        public ParticipantesController(ExpoCenterDbContext dbContext, IMapper mapper)
+        public ParticipantesController(ExpoCenterDbContext dbContext, IMapper mapper, ILogger<ParticipantesController> logger)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
+            this.logger = logger;
         }
 
         [AllowAnonymous]
@@ -79,11 +83,11 @@ namespace ExpoCenter.Mvc.Controllers
         }
 
         //[Authorize(Roles = "Administrador, Gerente")]
-        [AuthorizeRole(Supervisor, Gerente)]
+        [AuthorizeRole(Supervisor, Gerente, Agente)]
         public ActionResult Edit(int id)
         {
             var participante = dbContext.Participantes
-                //.Include(p => p.Eventos)
+                .Include(p => p.Eventos)
                 .SingleOrDefault(p => p.Id == id);
 
             if (participante == null)
@@ -112,6 +116,10 @@ namespace ExpoCenter.Mvc.Controllers
         {
             try
             {
+                throw new Exception("Teste de erro.");
+
+                logger.LogInformation(JsonSerializer.Serialize(viewModel));
+
                 if (!ModelState.IsValid)
                 {
                     return View(viewModel);
@@ -172,9 +180,9 @@ namespace ExpoCenter.Mvc.Controllers
 
                 throw;
             }
-            catch
+            catch(Exception ex)
             {
-                return View("Error");
+                return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, Exception = ex });
             }
         }
 
