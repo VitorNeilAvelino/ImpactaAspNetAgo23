@@ -1,5 +1,6 @@
 using ExpoCenter.Repositorios.SqlServer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Net.Http.Headers;
 
 namespace ExpoCenter.WebApi
 {
@@ -32,8 +33,16 @@ namespace ExpoCenter.WebApi
 
             app.UseAuthorization();
 
-
             app.MapControllers();
+
+            app.UseCors(c => c
+                .AllowAnyHeader()
+                //.WithHeaders(HeaderNames.Authorization, "user-email")
+                .AllowAnyMethod()
+                //.WithMethods("get", "POST")
+                //.AllowAnyOrigin()
+                .WithOrigins("http://localhost:5037")
+                );
 
             app.Run();
         }
