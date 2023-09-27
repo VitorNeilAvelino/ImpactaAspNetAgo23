@@ -1,8 +1,11 @@
+using ExpoCenter.Dominio.Interfaces;
 using ExpoCenter.Mvc.App_Start;
 using ExpoCenter.Mvc.Data;
+using ExpoCenter.Repositorios.Http;
 using ExpoCenter.Repositorios.SqlServer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ExpoCenter.Mvc
 {
@@ -40,6 +43,10 @@ namespace ExpoCenter.Mvc
             builder.Services.AddControllersWithViews();
 
             builder.Logging.AddLog4Net("log4net.config");
+
+            var baseAddress = new Uri(builder.Configuration.GetSection("Endpoints:ApiExpoCenter").Value.TrimEnd('/') + '/');
+            
+            builder.Services.AddHttpClient<IPagamentoRepositorio, PagamentoRepositorio>(c => c.BaseAddress = baseAddress);
 
             var app = builder.Build();
 

@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ExpoCenter.Dominio\ExpoCenter.Dominio.csproj" />
+    <ProjectReference Include="..\ExpoCenter.Repositorios.Http\ExpoCenter.Repositorios.Http.csproj" />
     <ProjectReference Include="..\ExpoCenter.Repositorios.SqlServer\ExpoCenter.Repositorios.SqlServer.csproj" />
   </ItemGroup>
 
