@@ -15,6 +15,7 @@ namespace ExpoCenter.Repositorios.SqlServer
         public DbSet<Evento> Eventos { get; set; }
         public DbSet<Participante> Participantes { get; set; }
         public DbSet<Pagamento> Pagamentos { get; set; }
+        public DbSet<Cliente> Clientes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
