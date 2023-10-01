@@ -5,7 +5,6 @@ using ExpoCenter.Repositorios.Http;
 using ExpoCenter.Repositorios.SqlServer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ExpoCenter.Mvc
 {
@@ -20,6 +19,9 @@ namespace ExpoCenter.Mvc
                 throw new InvalidOperationException("Connection string 'IdentityConnection' not found.");
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(identityConnectionString));
 
+            // Todo: toda vez que roda o scaffolding pra descompactar um componente de Identity, essa linha abaixo � acrescentada.
+            //builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
+            //builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
             //builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
 
             var expoCenterConnectionString = builder.Configuration.GetConnectionString("ExpoCenterConnection") ??
@@ -47,6 +49,8 @@ namespace ExpoCenter.Mvc
             var baseAddress = new Uri(builder.Configuration.GetSection("Endpoints:ApiExpoCenter").Value.TrimEnd('/') + '/');
             
             builder.Services.AddHttpClient<IPagamentoRepositorio, PagamentoRepositorio>(c => c.BaseAddress = baseAddress);
+            builder.Services.AddHttpClient<IClienteRepositorio, ClienteRepositorio>(c => c.BaseAddress = baseAddress);
+            builder.Services.AddHttpClient<IAccountRepositorio, AccountRepositorio>(c => c.BaseAddress = baseAddress);
 
             builder.Services.AddAuthentication().AddGoogle(googleOptions =>
             {
@@ -56,7 +60,6 @@ namespace ExpoCenter.Mvc
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseMigrationsEndPoint();
@@ -72,8 +75,13 @@ namespace ExpoCenter.Mvc
             app.UseAuthorization();
 
             app.MapControllerRoute(
+                name: "areas",
+                pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+            app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
             app.MapRazorPages();
 
             app.Run();

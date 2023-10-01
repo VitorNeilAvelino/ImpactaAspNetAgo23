@@ -10,6 +10,7 @@ using ExpoCenter.Repositorios.SqlServer;
 using AutoMapper;
 using ExpoCenter.Mvc.Models;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ExpoCenter.Mvc.Controllers
 {
@@ -80,6 +81,7 @@ namespace ExpoCenter.Mvc.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = "Supervisor")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Eventos == null)
