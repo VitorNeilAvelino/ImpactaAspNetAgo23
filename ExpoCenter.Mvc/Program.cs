@@ -1,3 +1,4 @@
+using ExpoCenter.Dominio.Entidades;
 using ExpoCenter.Dominio.Interfaces;
 using ExpoCenter.Mvc.App_Start;
 using ExpoCenter.Mvc.Data;
@@ -47,6 +48,9 @@ namespace ExpoCenter.Mvc
             var baseAddress = new Uri(builder.Configuration.GetSection("Endpoints:ApiExpoCenter").Value.TrimEnd('/') + '/');
             
             builder.Services.AddHttpClient<IPagamentoRepositorio, PagamentoRepositorio>(c => c.BaseAddress = baseAddress);
+            builder.Services.AddHttpClient<IClienteRepositorio, ClienteRepositorio>(c => c.BaseAddress = baseAddress);
+            builder.Services.AddHttpClient<IAccountRepositorio, AccountRepositorio>(c => c.BaseAddress = baseAddress);
+            //builder.Services.AddHttpClient<ICrudRepositorio<Pagamento>, CrudRepositorio<Pagamento>>(c => c.BaseAddress = baseAddress);
 
             builder.Services.AddAuthentication().AddGoogle(googleOptions =>
             {
@@ -72,8 +76,13 @@ namespace ExpoCenter.Mvc
             app.UseAuthorization();
 
             app.MapControllerRoute(
+                name: "areas",
+                pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+            app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+            
             app.MapRazorPages();
 
             app.Run();
