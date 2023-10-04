@@ -22,6 +22,7 @@ namespace ExpoCenter.Mvc
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(identityConnectionString));
 
             //builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
+            //builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
 
             var expoCenterConnectionString = builder.Configuration.GetConnectionString("ExpoCenterConnection") ??
                 throw new InvalidOperationException("Connection string 'ExpoCenterConnection' not found.");

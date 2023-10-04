@@ -3,6 +3,7 @@
     public interface ICrudRepositorio<T>
     {
         string Caminho { get; set; }
+        string Token { get; set; }
         Task Delete(int id);
         Task<List<T>> Get();
         Task<T> Get(int id);

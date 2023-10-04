@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using ExpoCenter.Dominio.Entidades;
 using ExpoCenter.Repositorios.SqlServer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ExpoCenter.WebApi.Controllers
 {
@@ -17,6 +19,7 @@ namespace ExpoCenter.WebApi.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Gerente", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<IEnumerable<Cliente>>> GetClientes()
         {
           if (_context.Clientes == null)

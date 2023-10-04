@@ -1,6 +1,6 @@
 ﻿using ExpoCenter.Dominio.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace ExpoCenter.Mvc.Areas.Admin.Controllers
 {
@@ -13,20 +13,37 @@ namespace ExpoCenter.Mvc.Areas.Admin.Controllers
         {
             _repositorio = repositorio;
             _repositorio.Caminho = "clientes";
+            //_repositorio.Token = Request.Cookies["apiExpoCenterUserToken"];
         }
 
         public async Task<ActionResult> Index()
         {
-            return View(await _repositorio.Get());
+            _repositorio.Token = Request.Cookies["apiExpoCenterUserToken"];
+
+            try
+            {
+                return View(await _repositorio.Get());
+            }
+            catch (HttpRequestException ex)
+            {
+                switch (ex.StatusCode)
+                {
+                    case HttpStatusCode.Forbidden:
+                        return Forbid();
+                    case HttpStatusCode.Unauthorized:
+                        //return Unauthorized();
+                        return Redirect("~/Identity/Account/Login");
+                }
+
+                throw;
+            }            
         }
 
-        // GET: ClientesController/Details/5
         public ActionResult Details(int id)
         {
             return View();
         }
 
-        // GET: ClientesController/Create
         public ActionResult Create()
         {
             return View();

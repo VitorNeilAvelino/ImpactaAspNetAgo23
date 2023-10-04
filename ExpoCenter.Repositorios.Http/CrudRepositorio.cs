@@ -9,6 +9,7 @@ namespace ExpoCenter.Repositorios.Http
         //private const string caminho = "clientes";
 
         public /*required*/ string Caminho { get; set; }
+        public string Token { get; set; }
 
         public CrudRepositorio(HttpClient httpClient)
         {
@@ -17,8 +18,19 @@ namespace ExpoCenter.Repositorios.Http
 
         public async Task<List<T>> Get()
         {
+            if (Token != null)
+            {
+                _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {Token}");
+            }
+
             using var resposta = await _httpClient.GetAsync(Caminho);
-            return await resposta.Content.ReadFromJsonAsync<List<T>>();
+
+            if (resposta.IsSuccessStatusCode)
+            {
+                return await resposta.Content.ReadFromJsonAsync<List<T>>(); 
+            }
+
+            throw new HttpRequestException(resposta.StatusCode.ToString(), null, resposta.StatusCode);
         }
 
         public async Task<T> Get(int id)

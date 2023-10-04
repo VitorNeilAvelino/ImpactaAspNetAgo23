@@ -13,12 +13,14 @@ namespace ExpoCenter.WebApi.Controllers
     public class AccountController : ControllerBase
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
 
-        public AccountController(SignInManager<ApplicationUser> signInManager, IConfiguration configuration)
+        public AccountController(SignInManager<ApplicationUser> signInManager, IConfiguration configuration, UserManager<ApplicationUser> userManager)
         {
             _signInManager = signInManager;
             _configuration = configuration;
+            _userManager = userManager;
         }
 
         [HttpPost("login")]
@@ -33,7 +35,7 @@ namespace ExpoCenter.WebApi.Controllers
 
             if (result.Succeeded)
             {
-                return Ok(BuildToken(model));
+                return Ok(await BuildToken(model));
             }
 
             ModelState.AddModelError(string.Empty, "Login inválido.");
@@ -41,7 +43,7 @@ namespace ExpoCenter.WebApi.Controllers
             return BadRequest(ModelState);
         }
 
-        private UserToken BuildToken(LoginModel userInfo)
+        private async Task<UserToken> BuildToken(LoginModel userInfo)
         {
             var claims = new List<Claim>
             {
@@ -49,7 +51,14 @@ namespace ExpoCenter.WebApi.Controllers
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 
-            claims.AddRange(User.Claims);
+            //claims.AddRange(User.Claims);
+
+            var user = await _userManager.FindByNameAsync(userInfo.Email);
+            var userClaims = await _userManager.GetClaimsAsync(user);
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            claims.AddRange(userClaims);
+            claims.AddRange(userRoles.Select(r => new Claim(ClaimsIdentity.DefaultRoleClaimType, r)));
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:key"]));
 
